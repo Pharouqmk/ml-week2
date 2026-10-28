@@ -1,0 +1,504 @@
+{
+  "pct_formula_match": 0.20322,
+  "audit": [
+    {
+      "issue": "Line_Total subtracts Discount as a flat number (not as a %)",
+      "table": "order_items",
+      "records_affected": 50000,
+      "pct_of_records": 100.0,
+      "impact": "Target is a deterministic formula of its inputs (leakage); discount effect is negligible"
+    },
+    {
+      "issue": "Order Unit_Price differs from catalogue Selling_Price (>1 unit)",
+      "table": "orders vs products",
+      "records_affected": 50000,
+      "pct_of_records": 100.0,
+      "impact": "Two conflicting price sources; order price used"
+    },
+    {
+      "issue": "Returns recorded on Cancelled/Pending orders",
+      "table": "returns",
+      "records_affected": 1685,
+      "pct_of_records": 67.4,
+      "impact": "Impossible business flow; Order_Status kept but treated with caution"
+    },
+    {
+      "issue": "Return_Date earlier than Order_Date",
+      "table": "returns",
+      "records_affected": 1252,
+      "pct_of_records": 50.1,
+      "impact": "Return timing is unreliable; not used as a feature"
+    },
+    {
+      "issue": "Orders with more than one return record",
+      "table": "returns",
+      "records_affected": 58,
+      "pct_of_records": 2.3,
+      "impact": "Collapsed to one order-level flag"
+    },
+    {
+      "issue": "Refund_Amount larger than the order's Line_Total",
+      "table": "returns",
+      "records_affected": 270,
+      "pct_of_records": 10.8,
+      "impact": "Refund amount not used (post-event, inconsistent)"
+    },
+    {
+      "issue": "Order placed before the customer's registration date",
+      "table": "orders vs customers",
+      "records_affected": 5159,
+      "pct_of_records": 10.3,
+      "impact": "Tenure would be negative; clipped to 0 and flagged"
+    },
+    {
+      "issue": "Duplicate customer e-mail addresses",
+      "table": "customers",
+      "records_affected": 49,
+      "pct_of_records": 1.0,
+      "impact": "E-mail is personal data; dropped"
+    },
+    {
+      "issue": "Duplicate customer phone numbers",
+      "table": "customers",
+      "records_affected": 4,
+      "pct_of_records": 0.1,
+      "impact": "Phone is personal data; dropped (formats are also inconsistent)"
+    },
+    {
+      "issue": "States that appear under more than one Region",
+      "table": "stores",
+      "records_affected": 6,
+      "pct_of_records": 60.0,
+      "impact": "Store_Region is unreliable; kept as a weak feature"
+    },
+    {
+      "issue": "Store names that are duplicated",
+      "table": "stores",
+      "records_affected": 15,
+      "pct_of_records": 60.0,
+      "impact": "Store_ID used as the key, name dropped"
+    },
+    {
+      "issue": "Sub_Category holds a single constant value ('General')",
+      "table": "products",
+      "records_affected": 500,
+      "pct_of_records": 100.0,
+      "impact": "Zero information; dropped"
+    },
+    {
+      "issue": "Suppliers with malformed phone numbers (<7 digits)",
+      "table": "suppliers",
+      "records_affected": 80,
+      "pct_of_records": 16.4,
+      "impact": "Table not used in the model"
+    }
+  ],
+  "n_orders": 50000,
+  "return_rate_pct": 4.88,
+  "scale_plan": [
+    {
+      "feature": "Age_Band_Ord",
+      "skew": 0.02,
+      "distinct_values": 4,
+      "scaler": "MinMaxScaler"
+    },
+    {
+      "feature": "Customer_Segment_Ord",
+      "skew": -0.03,
+      "distinct_values": 3,
+      "scaler": "MinMaxScaler"
+    },
+    {
+      "feature": "Discount_Pct",
+      "skew": 0.01,
+      "distinct_values": 5,
+      "scaler": "MinMaxScaler"
+    },
+    {
+      "feature": "Order_DayOfWeek",
+      "skew": 0.01,
+      "distinct_values": 7,
+      "scaler": "MinMaxScaler"
+    },
+    {
+      "feature": "Order_Month",
+      "skew": -0.01,
+      "distinct_values": 12,
+      "scaler": "MinMaxScaler"
+    },
+    {
+      "feature": "Order_Quarter",
+      "skew": -0.02,
+      "distinct_values": 4,
+      "scaler": "MinMaxScaler"
+    },
+    {
+      "feature": "Quantity",
+      "skew": 0.0,
+      "distinct_values": 5,
+      "scaler": "MinMaxScaler"
+    },
+    {
+      "feature": "Gross_Value",
+      "skew": 0.89,
+      "distinct_values": 36684,
+      "scaler": "RobustScaler"
+    },
+    {
+      "feature": "Prior_Orders",
+      "skew": 0.64,
+      "distinct_values": 24,
+      "scaler": "RobustScaler"
+    },
+    {
+      "feature": "Shipping_Share",
+      "skew": 9.95,
+      "distinct_values": 39997,
+      "scaler": "RobustScaler"
+    },
+    {
+      "feature": "Cost_Price",
+      "skew": 0.02,
+      "distinct_values": 499,
+      "scaler": "StandardScaler"
+    },
+    {
+      "feature": "Customer_Age",
+      "skew": -0.01,
+      "distinct_values": 53,
+      "scaler": "StandardScaler"
+    },
+    {
+      "feature": "Customer_Tenure_Days",
+      "skew": 0.18,
+      "distinct_values": 1085,
+      "scaler": "StandardScaler"
+    },
+    {
+      "feature": "Price_vs_Catalog_Gap",
+      "skew": -0.06,
+      "distinct_values": 39947,
+      "scaler": "StandardScaler"
+    },
+    {
+      "feature": "Selling_Price",
+      "skew": 0.24,
+      "distinct_values": 500,
+      "scaler": "StandardScaler"
+    },
+    {
+      "feature": "Shipping_Cost",
+      "skew": 0.0,
+      "distinct_values": 4500,
+      "scaler": "StandardScaler"
+    },
+    {
+      "feature": "Store_Age_Years",
+      "skew": -0.0,
+      "distinct_values": 1083,
+      "scaler": "StandardScaler"
+    },
+    {
+      "feature": "Unit_Margin_Pct",
+      "skew": -0.31,
+      "distinct_values": 500,
+      "scaler": "StandardScaler"
+    },
+    {
+      "feature": "Unit_Price",
+      "skew": -0.0,
+      "distinct_values": 32892,
+      "scaler": "StandardScaler"
+    }
+  ],
+  "outliers": [
+    {
+      "feature": "Gross_Value",
+      "min": 1003.0,
+      "max": 499975.0,
+      "skew": 0.89,
+      "IQR_lower_fence": -198794.25,
+      "IQR_upper_fence": 480549.75,
+      "IQR_outliers": 410,
+      "Z>3_outliers": 0,
+      "IQR_pct": 0.82
+    },
+    {
+      "feature": "Order_Value",
+      "min": 993.0,
+      "max": 499960.0,
+      "skew": 0.89,
+      "IQR_lower_fence": -198788.5,
+      "IQR_upper_fence": 480533.5,
+      "IQR_outliers": 410,
+      "Z>3_outliers": 0,
+      "IQR_pct": 0.82
+    },
+    {
+      "feature": "Shipping_Cost",
+      "min": 500.0,
+      "max": 5000.0,
+      "skew": 0.0,
+      "IQR_lower_fence": -1729.0,
+      "IQR_upper_fence": 7223.0,
+      "IQR_outliers": 0,
+      "Z>3_outliers": 0,
+      "IQR_pct": 0.0
+    },
+    {
+      "feature": "Unit_Price",
+      "min": 1003.0,
+      "max": 99998.0,
+      "skew": -0.01,
+      "IQR_lower_fence": -48562.62,
+      "IQR_upper_fence": 149334.38,
+      "IQR_outliers": 0,
+      "Z>3_outliers": 0,
+      "IQR_pct": 0.0
+    },
+    {
+      "feature": "Customer_Age",
+      "min": 18.0,
+      "max": 70.0,
+      "skew": -0.01,
+      "IQR_lower_fence": -12.0,
+      "IQR_upper_fence": 100.0,
+      "IQR_outliers": 0,
+      "Z>3_outliers": 0,
+      "IQR_pct": 0.0
+    },
+    {
+      "feature": "Customer_Tenure_Days",
+      "min": 0.0,
+      "max": 1089.0,
+      "skew": 0.19,
+      "IQR_lower_fence": -595.5,
+      "IQR_upper_fence": 1408.5,
+      "IQR_outliers": 0,
+      "Z>3_outliers": 0,
+      "IQR_pct": 0.0
+    },
+    {
+      "feature": "Prior_Orders",
+      "min": 0.0,
+      "max": 23.0,
+      "skew": 0.64,
+      "IQR_lower_fence": -5.5,
+      "IQR_upper_fence": 14.5,
+      "IQR_outliers": 557,
+      "Z>3_outliers": 170,
+      "IQR_pct": 1.11
+    },
+    {
+      "feature": "Store_Age_Years",
+      "min": 2.95,
+      "max": 5.92,
+      "skew": 0.0,
+      "IQR_lower_fence": 2.4,
+      "IQR_upper_fence": 6.47,
+      "IQR_outliers": 0,
+      "Z>3_outliers": 0,
+      "IQR_pct": 0.0
+    },
+    {
+      "feature": "Shipping_Share",
+      "min": 0.0,
+      "max": 4.54,
+      "skew": 9.79,
+      "IQR_lower_fence": -0.05,
+      "IQR_upper_fence": 0.11,
+      "IQR_outliers": 5428,
+      "Z>3_outliers": 800,
+      "IQR_pct": 10.86
+    }
+  ],
+  "corr_gross_order": 0.9999999982295589,
+  "n_beat_noise": 5,
+  "clf_auc_cv": [
+    0.4955,
+    0.0116
+  ],
+  "r2": {
+    "with_gross_value": 1.0,
+    "without_gross_value": 1.0,
+    "without_arithmetic_inputs": -0.002
+  },
+  "n_features_candidate": 44,
+  "n_features_selected": 40,
+  "removed_low_variance": [
+    "Shipping_Share"
+  ],
+  "removed_high_correlation": [
+    "Order_Month",
+    "Customer_Age",
+    "Selling_Price"
+  ],
+  "selected": [
+    "Quantity",
+    "Unit_Price",
+    "Discount_Pct",
+    "Shipping_Cost",
+    "Cost_Price",
+    "Order_Quarter",
+    "Order_DayOfWeek",
+    "Is_Weekend",
+    "Gross_Value",
+    "Unit_Margin_Pct",
+    "Price_vs_Catalog_Gap",
+    "Ordered_Before_Registration",
+    "Customer_Tenure_Days",
+    "Prior_Orders",
+    "Store_Age_Years",
+    "Is_Local_Store",
+    "Customer_Segment_Ord",
+    "Age_Band_Ord",
+    "Sales_Channel_Enc",
+    "Gender_Enc",
+    "Payment_Method_Cash",
+    "Payment_Method_Transfer",
+    "Order_Status_Completed",
+    "Order_Status_Pending",
+    "Category_Electronics",
+    "Category_Fashion",
+    "Category_Groceries",
+    "Category_Home",
+    "Customer_State_Anambra",
+    "Customer_State_Delta",
+    "Customer_State_Enugu",
+    "Customer_State_Kaduna",
+    "Customer_State_Kano",
+    "Customer_State_Lagos",
+    "Customer_State_Ogun",
+    "Customer_State_Oyo",
+    "Customer_State_Rivers",
+    "Store_Region_North",
+    "Store_Region_South",
+    "Store_Region_West"
+  ],
+  "reg_features": [
+    "Quantity",
+    "Unit_Price",
+    "Discount_Pct",
+    "Shipping_Cost",
+    "Cost_Price",
+    "Order_Quarter",
+    "Order_DayOfWeek",
+    "Is_Weekend",
+    "Unit_Margin_Pct",
+    "Price_vs_Catalog_Gap",
+    "Ordered_Before_Registration",
+    "Customer_Tenure_Days",
+    "Prior_Orders",
+    "Store_Age_Years",
+    "Is_Local_Store",
+    "Customer_Segment_Ord",
+    "Age_Band_Ord",
+    "Sales_Channel_Enc",
+    "Gender_Enc",
+    "Payment_Method_Cash",
+    "Payment_Method_Transfer",
+    "Order_Status_Completed",
+    "Order_Status_Pending",
+    "Category_Electronics",
+    "Category_Fashion",
+    "Category_Groceries",
+    "Category_Home",
+    "Customer_State_Anambra",
+    "Customer_State_Delta",
+    "Customer_State_Enugu",
+    "Customer_State_Kaduna",
+    "Customer_State_Kano",
+    "Customer_State_Lagos",
+    "Customer_State_Ogun",
+    "Customer_State_Oyo",
+    "Customer_State_Rivers",
+    "Store_Region_North",
+    "Store_Region_South",
+    "Store_Region_West"
+  ],
+  "no_arith": [
+    "Shipping_Cost",
+    "Cost_Price",
+    "Order_Quarter",
+    "Order_DayOfWeek",
+    "Is_Weekend",
+    "Unit_Margin_Pct",
+    "Ordered_Before_Registration",
+    "Customer_Tenure_Days",
+    "Prior_Orders",
+    "Store_Age_Years",
+    "Is_Local_Store",
+    "Customer_Segment_Ord",
+    "Age_Band_Ord",
+    "Sales_Channel_Enc",
+    "Gender_Enc",
+    "Payment_Method_Cash",
+    "Payment_Method_Transfer",
+    "Order_Status_Completed",
+    "Order_Status_Pending",
+    "Category_Electronics",
+    "Category_Fashion",
+    "Category_Groceries",
+    "Category_Home",
+    "Customer_State_Anambra",
+    "Customer_State_Delta",
+    "Customer_State_Enugu",
+    "Customer_State_Kaduna",
+    "Customer_State_Kano",
+    "Customer_State_Lagos",
+    "Customer_State_Ogun",
+    "Customer_State_Oyo",
+    "Customer_State_Rivers",
+    "Store_Region_North",
+    "Store_Region_South",
+    "Store_Region_West"
+  ],
+  "train_rows": 40000,
+  "test_rows": 10000,
+  "top_importance": [
+    {
+      "feature": "Price_vs_Catalog_Gap",
+      "rf_importance": 0.0856,
+      "mutual_info": 0.0015,
+      "beats_noise": true
+    },
+    {
+      "feature": "Shipping_Cost",
+      "rf_importance": 0.0842,
+      "mutual_info": 0.0,
+      "beats_noise": true
+    },
+    {
+      "feature": "Store_Age_Years",
+      "rf_importance": 0.0764,
+      "mutual_info": 0.0008,
+      "beats_noise": true
+    },
+    {
+      "feature": "Unit_Price",
+      "rf_importance": 0.0752,
+      "mutual_info": 0.0,
+      "beats_noise": true
+    },
+    {
+      "feature": "Gross_Value",
+      "rf_importance": 0.0751,
+      "mutual_info": 0.0007,
+      "beats_noise": true
+    },
+    {
+      "feature": "RANDOM_PROBE",
+      "rf_importance": 0.0734,
+      "mutual_info": 0.0,
+      "beats_noise": false
+    }
+  ],
+  "cleaned_shape": [
+    50000,
+    33
+  ],
+  "ml_shape": [
+    50000,
+    44
+  ]
+}
